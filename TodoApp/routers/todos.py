@@ -54,7 +54,7 @@ async def render_todo_page(request: Request, db: db_dependency):
 
         todos = db.query(Todos).filter(Todos.owner_id == user.get("id")).all()
 
-        return templates.TemplateResponse("todo.html", {"request": request, "todos": todos, "user": user})
+        return templates.TemplateResponse(name="todo.html", request=request, context={"todos": todos, "user": user})
 
     except:
         return redirect_to_login()
@@ -68,7 +68,7 @@ async def render_todo_page(request: Request):
         if user is None:
             return redirect_to_login()
 
-        return templates.TemplateResponse("add-todo.html", {"request": request, "user": user})
+        return templates.TemplateResponse(name="add-todo.html", request=request, context={"user": user})
 
     except:
         return redirect_to_login()
@@ -84,7 +84,7 @@ async def render_edit_todo_page(request: Request, todo_id: int, db: db_dependenc
 
         todo = db.query(Todos).filter(Todos.id == todo_id).first()
 
-        return templates.TemplateResponse("edit-todo.html", {"request": request, "todo": todo, "user": user})
+        return templates.TemplateResponse(name="edit-todo.html", request=request, context={"todo": todo, "user": user})
 
     except:
         return redirect_to_login()
