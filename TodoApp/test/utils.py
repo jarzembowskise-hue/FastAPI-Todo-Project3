@@ -1,8 +1,8 @@
-from ..main import app
 from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
+from sqlalchemy.orm import sessionmaker
 from ..database import Base
+from ..main import app
 from fastapi.testclient import TestClient
 import pytest
 from ..models import Todos, Users
@@ -13,13 +13,12 @@ SQLALCHEMY_DATABASE_URL = "sqlite:///./testdb.db"
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
     connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
+    poolclass = StaticPool,
 )
 
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base.metadata.create_all(bind=engine)
-
 
 def override_get_db():
     db = TestingSessionLocal()
@@ -28,19 +27,16 @@ def override_get_db():
     finally:
         db.close()
 
-
 def override_get_current_user():
     return {'username': 'codingwithrobytest', 'id': 1, 'user_role': 'admin'}
 
-
 client = TestClient(app)
-
 
 @pytest.fixture
 def test_todo():
     todo = Todos(
-        title="Learn to code",
-        description="Learn it everyday",
+        title="Learn to code!",
+        description="Need to learn everyday!",
         priority=5,
         complete=False,
         owner_id=1,
@@ -58,8 +54,8 @@ def test_todo():
 @pytest.fixture
 def test_user():
     user = Users(
-        username="codingwithroby",
-        email="codingwithrobytest@gmail.com",
+        username="codingwithrobytest",
+        email="codingwithrobytest@email.com",
         first_name="Eric",
         last_name="Roby",
         hashed_password=bcrypt_context.hash("testpassword"),
@@ -73,6 +69,8 @@ def test_user():
     with engine.connect() as connection:
         connection.execute(text("DELETE FROM users;"))
         connection.commit()
+
+
 
 
 
